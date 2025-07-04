@@ -1,0 +1,74 @@
+import discord
+from discord.ext import commands
+from dotenv import load_dotenv
+
+import os
+import time
+import logging
+import traceback
+import asyncio
+
+import server
+import gcp
+
+load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
+logger = logging.getLogger(__name__)
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+PROJECT_ID = os.getenv("PROJECT_ID")
+ZONE = os.getenv("ZONE")
+SERVER = os.getenv("SERVER")
+
+@bot.event
+async def on_ready() -> None:
+    logger.info(f'Logged in as {bot.user}')
+
+@bot.event
+async def on_message(message: discord.Message) -> None:
+    if message.author.bot:
+        return
+
+    logger.info(f'recieved {message.content} from {message.author}')
+
+    await bot.process_commands(message)  # This is required to process commands
+
+@bot.command(brief="Starts minecraft server.")
+async def startserver(ctx) -> None:
+    await ctx.send("Starting server, please wait!")
+
+    async def start_server(ctx):
+        gcp.start_instance(logger, PROJECT_ID, ZONE, SERVER)
+        await ctx.send("Successfully started server!")
+
+    asyncio.create_task(start_server(ctx))
+    return
+
+@bot.command(brief="Stops minecraft server.")
+async def stopserver(ctx) -> None:
+    await ctx.send("Shutting down server...")
+    async def stop_server(ctx):
+        gcp.start_instance(logger, PROJECT_ID, ZONE, SERVER)
+        await ctx.send("Server has been shut down!")
+    asyncio.create_task(stop_server(ctx))
+    return
+
+@bot.event
+async def on_command_error(ctx: commands.Context, error: commands.CommandError):
+    embed = discord.Embed(title="Error")
+    if isinstance(error, commands.CommandInvokeError):
+        error = error.original
+    else:
+        error_data = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        embed.description = f"Unknown error\n```py\n{error_data[:1000]}\n```"
+    await ctx.send(embed=embed)
+
+bot.run(os.getenv("DISCORD_TOKEN"))
