@@ -44,7 +44,14 @@ async def on_message(message: discord.Message) -> None:
 async def startserver(ctx) -> None:
     await ctx.send("Starting server, please wait!")
     await asyncio.to_thread(gcp.start_instance, logger, PROJECT_ID, ZONE, SERVER)
-    embed = discord.Embed(title="Successfully started server!")
+    ips = await asyncio.to_thread(gcp.get_instance_ipv4, logger, PROJECT_ID, ZONE, SERVER)
+    numIPs = len(ips)
+    if numIPs != 1:
+        logger.warn(f"unexpected number of IP(s) found: {ips}")
+        raise RuntimeError(f"Expected one IP address but found {numIPs}")
+
+    embed = discord.Embed(title="Successfully started server!",
+                          description=f"IP address: `{ips[0]}`")
     await ctx.send(embed=embed)
     return
 
