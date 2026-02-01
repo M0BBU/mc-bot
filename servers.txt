@@ -1,0 +1,13 @@
+cobble,"sudo docker run \
+    -d \
+    -it \
+    -p 25565:25565 \
+    -e EULA=TRUE \
+    -e MOD_PLATFORM=AUTO_CURSEFORGE \
+    -e CF_API_KEY='$2a$10$GjGDGv4kkOUKouFWg0HWdeltXiIizkBXH8JViUbUPfHMoAr5Tboyy' \
+    -e CF_SLUG=cobblemon-neoforge \
+    -e MEMORY=4G \
+    -e ENABLE_WHITELIST=true \
+    -e WHITELIST=Mubblu \
+    -v ~/mcworlds/cobble:/data \
+    itzg/minecraft-server:java21 "
