@@ -7,3 +7,5 @@ include/
 __pycache__/
 pyvenv.cfg
 .envrc
+servers.txt
+result

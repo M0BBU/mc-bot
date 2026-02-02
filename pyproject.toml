@@ -3,6 +3,9 @@ name = "mc-bot"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+authors = [
+    { name = "M0BBU", email = "m0bbu@pm.me" }
+]
 requires-python = ">=3.13"
 dependencies = [
     "discord>=2.3.2",
@@ -10,3 +13,10 @@ dependencies = [
     "fabric>=3.2.2",
     "google-cloud-compute>=1.43.0",
 ]
+
+[project.scripts]
+mc-bot = "mc_bot:main"
+
+[build-system]
+requires = ["uv_build>=0.9.26,<0.10.0"]
+build-backend = "uv_build"

@@ -9,8 +9,8 @@ import logging
 import traceback
 import asyncio
 
-import gcp
-import servers
+from .provider import gcp
+from .server import servers
 
 load_dotenv()
 
