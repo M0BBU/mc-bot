@@ -1,6 +1,6 @@
 # mc-bot
 
-Small discord bot for managing a Minecraft server hosted on GCP.
+Small discord bot for managing a Minecraft servers.
 
 ## Running
 
